@@ -39,10 +39,32 @@ public class UserController {
 
     //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
+
+    //Modified code to accept a password that contains at least atleast 1 alphabet, 1 number & 1 special character
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
-        userService.registerUser(user);
-        return "redirect:/users/login";
+    public String registerUser(User user, Model model) {
+        String userpassword = user.getPassword();
+        boolean containsAlphabet = false;
+        boolean containsNumber = false;
+        boolean containsSpecialChar = false;
+        //Checks if at least 1 alphabet is present in the password or not
+        containsAlphabet = userpassword.matches(".*[a-zA-Z].*");
+        //Checks if at least 1 number is present in the password or not
+        containsNumber = userpassword.matches(".*[0-9].*");
+        //Checks if at least 1 special character (Anything other than number or alphabet) is present in the password or not
+        containsSpecialChar = userpassword.matches(".*[^a-zA-Z0-9].*");
+        //If all three conditions are satisfied (are true), then register the user and redirect to login page
+        if(containsAlphabet&&containsNumber&&containsSpecialChar) {
+            userService.registerUser(user);
+            return "redirect:/users/login";
+        }
+        /*Else (i.e password doesn't contain atleast 1 alphabet, 1 number & 1 special character, displaying the
+          error message to the user and sending registration page again
+         */
+        String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
+        model.addAttribute("passwordTypeError", error);
+        model.addAttribute("User",new User());
+        return "users/registration";
     }
 
     //This controller method is called when the request pattern is of type 'users/login'

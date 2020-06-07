@@ -94,12 +94,26 @@ public class ImageController {
 
     //The method first needs to convert the list of all the tags to a string containing all the tags separated by a comma and then add this string in a Model type object
     //This string is then displayed by 'edit.html' file as previous tags of an image
-    @RequestMapping(value = "/editImage")
-    public String editImage(@RequestParam("imageId") Integer imageId, Model model) {
-        Image image = imageService.getImage(imageId);
 
-        String tags = convertTagsToString(image.getTags());
+    //Modifying the logic
+    //If the owner of the image clicks edit, should be able to edit the image (Goes to edit.html)
+    //Else i.e if the session user is not owner of the image, should not be able to edit (Goes to image.html) with error message
+    @RequestMapping(value = "/editImage")
+    public String editImage(@RequestParam("imageId") Integer imageId, Model model, HttpSession session) {
+        Image image = imageService.getImage(imageId);
         model.addAttribute("image", image);
+        User loggedinuser = (User)session.getAttribute("loggeduser");
+        User imgOwner = image.getUser();
+        //Check if the owner of the image and session user are same
+        //If owner of the image is not equal to session user - Display Error that only owner of the image can edit the image
+        if(!imgOwner.getUsername().equals(loggedinuser.getUsername())) {
+            String error = "Only the owner of the image can edit the image";
+            model.addAttribute("editError", error);
+            model.addAttribute("tags", image.getTags());
+            return "images/image";
+        }
+        //Else allow user to edit the image and send edit.html
+        String tags = convertTagsToString(image.getTags());
         model.addAttribute("tags", tags);
         return "images/edit";
     }
@@ -135,7 +149,8 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        //Modified the image retrieval - /images/{imageId}/{imageTitle}
+        return "redirect:/images/" + updatedImage.getId()+"/"+updatedImage.getTitle();
     }
 
 

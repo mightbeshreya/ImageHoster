@@ -7,7 +7,8 @@ import java.util.List;
 @Entity
 //@Table annotation provides more options to customize the mapping.
 //Here the name of the table to be created in the database is explicitly mentioned as 'Tags'. Hence the table named 'Tags' will be created in the database with all the columns mapped to all the attributes in 'Tag' class
-@Table(name = "Tags")
+//Modified name of the table Tags to tags (All Lowercase) to avoid DDL error
+@Table(name = "tags")
 public class Tag {
 
     //@Id annotation specifies that the corresponding attribute is a primary key

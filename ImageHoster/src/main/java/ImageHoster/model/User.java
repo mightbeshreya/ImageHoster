@@ -41,6 +41,19 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
+    //Added OneToMany Relationship for user and comments- Meaning that one user can post many comments under any image
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Image> comments = new ArrayList<>();
+
+    //Getter and setter methods
+    public List<Image> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Image> comments) {
+        this.comments = comments;
+    }
+
     public Integer getId() {
         return id;
     }

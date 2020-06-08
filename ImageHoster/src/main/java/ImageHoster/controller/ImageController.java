@@ -3,6 +3,7 @@ package ImageHoster.controller;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
+
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,8 @@ public class ImageController {
         Image image = imageService.getImage(imageId);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        //Modified code to get all comments for an image and added to model attribute
+        model.addAttribute("comments", image.getComments());
         return "images/image";
     }
 
@@ -110,6 +113,8 @@ public class ImageController {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
             model.addAttribute("tags", image.getTags());
+            //Modified code to get all comments for an image and added to model attribute
+            model.addAttribute("comments", image.getComments());
             return "images/image";
         }
         //Else allow user to edit the image and send edit.html
@@ -149,6 +154,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
+
         //Modified the image retrieval - /images/{imageId}/{imageTitle}
         return "redirect:/images/" + updatedImage.getId()+"/"+updatedImage.getTitle();
     }
@@ -169,13 +175,14 @@ public class ImageController {
             String error = "Only the owner of the image can delete the image";
             model.addAttribute("deleteError", error);
             model.addAttribute("image", image);
+            //Modified code to get all comments for an image and added to model attribute
+            model.addAttribute("comments", image.getComments());
             return "images/image";
         }
         //Else i.e. if owner of the image is logged in user, delete the image from database and route to all images
         imageService.deleteImage(imageId);
         return "redirect:/images";
     }
-
 
     //This method converts the image to Base64 format
     private String convertUploadedFileToBase64(MultipartFile file) throws IOException {

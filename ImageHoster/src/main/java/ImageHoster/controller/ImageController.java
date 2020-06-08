@@ -109,7 +109,8 @@ public class ImageController {
         User imgOwner = image.getUser();
         //Check if the owner of the image and session user are same
         //If owner of the image is not equal to session user - Display Error that only owner of the image can edit the image
-        if(!imgOwner.getUsername().equals(loggedinuser.getUsername())) {
+        //Fixed bug to check user Ids and not Usernames
+        if(imgOwner.getId()!=(loggedinuser.getId())) {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
             model.addAttribute("tags", image.getTags());
@@ -171,7 +172,8 @@ public class ImageController {
         Image image = imageService.getImage(imageId);
         //Check if the owner of the image is same as logged in user
         //If the owner of the image is not same as logged in user, add an error message and route to images/image
-        if(!image.getUser().getUsername().equals(loggedinuser.getUsername())){
+        //Fixed bug to check user Ids and not Usernames
+        if(image.getUser().getId()!=(loggedinuser.getId())){
             String error = "Only the owner of the image can delete the image";
             model.addAttribute("deleteError", error);
             model.addAttribute("image", image);

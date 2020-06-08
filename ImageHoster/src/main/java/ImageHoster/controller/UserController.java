@@ -56,7 +56,8 @@ public class UserController {
         //If all three conditions are satisfied (are true), then register the user and redirect to login page
         if(containsAlphabet&&containsNumber&&containsSpecialChar) {
             userService.registerUser(user);
-            return "redirect:/users/login";
+            //Modified return "redirect:/users/login" to "users/login"
+            return "users/login";
         }
         /*Else (i.e password doesn't contain atleast 1 alphabet, 1 number & 1 special character, displaying the
           error message to the user and sending registration page again
